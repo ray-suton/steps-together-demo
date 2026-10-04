@@ -11,7 +11,7 @@ npm test
 npm run serve
 ```
 
-Open <http://127.0.0.1:4173/>.
+Open the URL printed by the server. It starts at <http://127.0.0.1:4173/> and automatically tries the next port if that port is already occupied.
 
 ## Locked MVP scope
 

@@ -38,6 +38,7 @@
 - Desktop flow: indoor filter returned only Galleria Indoor Steps; Challenging returned Yas Park Power Walk; details showed route, food, difficulty, map host, and sign-up selection.
 - Mobile flow: Galleria filter -> detail -> interest confirmation passed at 375x812 with no horizontal overflow and no browser storage.
 - Visual QA: responsive screenshots passed the second visual verdict at 93/100.
+- Runtime hardening: a second `npm run serve` now falls back from occupied port 4173 to the next available port instead of throwing an unhandled `EADDRINUSE` error.
 
 ### Current blockers and risks
 
