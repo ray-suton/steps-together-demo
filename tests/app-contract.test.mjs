@@ -89,8 +89,12 @@ test("filters by search text, category, and impact", () => {
 test("renders an escaped local route SVG from coordinate data", () => {
   const svg = buildRouteSvg({ ...sampleEvents[0], title: "<unsafe>" });
   assert.match(svg, /<svg/);
+  assert.match(svg, /illustrated route map/);
+  assert.match(svg, /route-waypoint-label/);
+  assert.match(svg, /START/);
+  assert.match(svg, /FINISH/);
   assert.match(svg, /polyline points="/);
-  assert.match(svg, /&lt;unsafe&gt; route map/);
+  assert.match(svg, /&lt;unsafe&gt; illustrated route map/);
 });
 
 test("creates external map URL from first and final route coordinate", () => {

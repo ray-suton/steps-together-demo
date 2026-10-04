@@ -487,6 +487,31 @@ dd {
   height: auto;
 }
 
+.route-map .route-waypoint-label,
+.route-map .route-legend-label,
+.route-map .route-north {
+  fill: var(--teal-strong);
+  font-family: inherit;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+.route-map .route-legend-label {
+  fill: var(--muted);
+  font-size: 5px;
+  letter-spacing: 0.08em;
+}
+
+.route-map .route-north {
+  fill: var(--muted);
+  font-size: 6px;
+}
+
 .map-caption,
 .availability-note {
   margin: -0.7rem 0 1rem;

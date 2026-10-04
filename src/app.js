@@ -228,21 +228,57 @@ export function buildRouteSvg(event) {
   const latSpan = Math.max(maxLat - minLat, 0.0001);
   const lngSpan = Math.max(maxLng - minLng, 0.0001);
 
-  const points = coordinates
+  const pointPairs = coordinates
     .map(([lat, lng]) => {
       const x = 24 + ((lng - minLng) / lngSpan) * 252;
       const y = 156 - ((lat - minLat) / latSpan) * 120;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
+      return [Number(x.toFixed(1)), Number(y.toFixed(1))];
+    });
+  const points = pointPairs.map(([x, y]) => `${x},${y}`).join(" ");
+  const routePath = pointPairs.reduce((path, [x, y], index) => {
+    if (index === 0) return `M ${x} ${y}`;
+    const [previousX, previousY] = pointPairs[index - 1];
+    const controlX = ((previousX + x) / 2).toFixed(1);
+    const controlY = ((previousY + y) / 2).toFixed(1);
+    return `${path} Q ${controlX} ${controlY} ${x} ${y}`;
+  }, "");
+  const waypointLabels = Array.isArray(event.route) && event.route.length
+    ? event.route
+    : pointPairs.map((_, index) => `Waypoint ${index + 1}`);
+  const start = pointPairs[0];
+  const finish = pointPairs.at(-1);
+  const theme = `${event.title || ""} ${event.location || ""} ${event.imageTheme || ""}`.toLowerCase();
+  const waterShape = /corniche|mangrove|waterfront|lake|boardwalk/.test(theme)
+    ? '<path d="M0 24 C54 10 86 48 142 30 S252 8 300 26 L300 0 L0 0 Z" fill="#d9eff1" opacity="0.95"></path>'
+    : '<path d="M0 24 H300 M0 58 H300 M0 92 H300 M0 126 H300 M36 0 V180 M92 0 V180 M148 0 V180 M204 0 V180 M260 0 V180" stroke="#d9e8e1" stroke-width="1" opacity="0.8"></path>';
+  const labels = pointPairs
+    .map(([x, y], index) => {
+      const label = waypointLabels[index] || `Waypoint ${index + 1}`;
+      const shortLabel = label.length > 20 ? `${label.slice(0, 19)}…` : label;
+      const labelY = y < 34 ? y + 20 : y - 13;
+      const labelAnchor = x < 60 ? "start" : x > 240 ? "end" : "middle";
+      const labelX = x < 60 ? 8 : x > 240 ? 292 : x;
+      return `
+        <circle cx="${x}" cy="${y}" r="4.5" fill="#ffffff" stroke="#0d6b57" stroke-width="2"></circle>
+        <text x="${labelX.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="${labelAnchor}" class="route-waypoint-label">${escapeHtml(shortLabel)}</text>
+      `;
     })
-    .join(" ");
+    .join("");
 
   return `
-    <svg class="route-map" viewBox="0 0 300 180" role="img" aria-label="${escapeHtml(event.title)} route map">
+    <svg class="route-map" viewBox="0 0 300 180" role="img" aria-label="${escapeHtml(event.title)} illustrated route map">
       <rect width="300" height="180" rx="8" fill="#eef7f2"></rect>
-      <path d="M24 140 C90 104 146 155 276 46" fill="none" stroke="#c9ddd3" stroke-width="18" stroke-linecap="round"></path>
-      <polyline points="${points}" fill="none" stroke="#0d6b57" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline>
-      <circle cx="${points.split(" ")[0].split(",")[0]}" cy="${points.split(" ")[0].split(",")[1]}" r="8" fill="#0d6b57"></circle>
-      <circle cx="${points.split(" ").at(-1).split(",")[0]}" cy="${points.split(" ").at(-1).split(",")[1]}" r="8" fill="#f3a712"></circle>
+      ${waterShape}
+      <path d="M-20 150 C42 126 82 174 142 142 S246 102 320 130" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" opacity="0.8"></path>
+      <path d="${routePath}" fill="none" stroke="#b8d0c5" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="${routePath}" fill="none" stroke="#0d6b57" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      <polyline points="${points}" fill="none" stroke="transparent" stroke-width="1"></polyline>
+      ${labels}
+      <circle cx="${start[0]}" cy="${start[1]}" r="8" fill="#0d6b57"></circle>
+      <circle cx="${finish[0]}" cy="${finish[1]}" r="8" fill="#f3a712"></circle>
+      <text x="12" y="168" class="route-legend-label">START</text>
+      <text x="255" y="168" class="route-legend-label">FINISH</text>
+      <text x="282" y="18" text-anchor="end" class="route-north">N ↑</text>
     </svg>
   `;
 }

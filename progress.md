@@ -39,6 +39,7 @@
 - Mobile flow: Galleria filter -> detail -> interest confirmation passed at 375x812 with no horizontal overflow and no browser storage.
 - Visual QA: responsive screenshots passed the second visual verdict at 93/100.
 - Runtime hardening: a second `npm run serve` now falls back from occupied port 4173 to the next available port instead of throwing an unhandled `EADDRINUSE` error.
+- Route visual polish: the preview now uses curved waypoint geometry, contextual water/road cues, start/finish markers, waypoint labels, and a north indicator while remaining clearly labeled as illustrative.
 
 ### Current blockers and risks
 
