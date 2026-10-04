@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Steps Together demo for discovering community walking events, route details, food information, and sign-up access."
+    >
+    <title>Steps Together</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./src/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#events">Skip to events</a>
+
+    <header class="app-header">
+      <div class="brand-lockup" aria-label="Steps Together">
+        <span class="brand-mark" aria-hidden="true">ST</span>
+        <div>
+          <p class="eyebrow">Community walking events</p>
+          <h1>Steps Together</h1>
+        </div>
+      </div>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="#events">Events</a>
+        <a href="#event-detail">Details</a>
+        <a href="#signup-panel">Sign up</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="workspace" aria-labelledby="events-heading">
+        <aside class="filter-panel" aria-label="Event filters">
+          <div>
+            <p class="eyebrow">Sprint 2 demo</p>
+            <h2 id="events-heading">Find a walk that fits today</h2>
+            <p class="intro-copy">
+              Browse fictional, non-sensitive event data with visible routes, levels,
+              food information, map access, and sign-up entry points.
+            </p>
+          </div>
+
+          <form class="filters" data-filter-form>
+            <label for="event-search">Search events</label>
+            <input
+              id="event-search"
+              name="query"
+              type="search"
+              placeholder="Mall, park, beginner..."
+              autocomplete="off"
+              data-search-input
+            >
+
+            <label for="level-filter">Difficulty</label>
+            <select id="level-filter" name="level" data-level-filter>
+              <option value="all">All levels</option>
+              <option value="easy">Easy</option>
+              <option value="moderate">Moderate</option>
+              <option value="hard">Challenging</option>
+            </select>
+
+            <label for="location-filter">Location type</label>
+            <select id="location-filter" name="location" data-location-filter>
+              <option value="all">All locations</option>
+              <option value="outdoor">Outdoor</option>
+              <option value="indoor">Indoor</option>
+              <option value="family">Family-friendly</option>
+            </select>
+
+            <fieldset>
+              <legend>Food availability</legend>
+              <label class="choice">
+                <input type="radio" name="food" value="all" checked data-food-filter>
+                <span>All</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="food" value="provided" data-food-filter>
+                <span>Provided</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="food" value="nearby" data-food-filter>
+                <span>Nearby</span>
+              </label>
+            </fieldset>
+          </form>
+        </aside>
+
+        <section id="events" class="event-browser" aria-live="polite">
+          <div class="list-toolbar">
+            <div>
+              <p class="eyebrow">Discovery</p>
+              <h2>Upcoming walks</h2>
+            </div>
+            <p id="event-count" class="count-pill" data-event-count>3 events</p>
+          </div>
+
+          <p id="status-message" class="sr-only" role="status" data-status-message>
+            Showing 3 demo events.
+          </p>
+
+          <div class="event-list" data-event-list>
+            <article
+              class="event-card is-selected"
+              data-event-card
+              data-event-id="corniche-sunrise"
+              data-level="easy"
+              data-location="outdoor"
+              data-food="nearby"
+            >
+              <div class="card-main">
+                <div class="card-heading">
+                  <span class="level-badge easy">Easy</span>
+                  <h3>Corniche Sunrise Walk</h3>
+                </div>
+                <p>Low-pressure morning route for new walkers and social fitness seekers.</p>
+                <dl class="event-facts">
+                  <div>
+                    <dt>When</dt>
+                    <dd>Sat, 7:30 AM</dd>
+                  </div>
+                  <div>
+                    <dt>Where</dt>
+                    <dd>Waterfront Promenade</dd>
+                  </div>
+                  <div>
+                    <dt>Route</dt>
+                    <dd>2.4 km flat loop</dd>
+                  </div>
+                  <div>
+                    <dt>Food</dt>
+                    <dd>Cafes nearby</dd>
+                  </div>
+                </dl>
+              </div>
+              <button type="button" class="select-button" data-event-select="corniche-sunrise">
+                View details
+              </button>
+            </article>
+
+            <article
+              class="event-card"
+              data-event-card
+              data-event-id="mall-steps"
+              data-level="moderate"
+              data-location="indoor family"
+              data-food="provided"
+            >
+              <div class="card-main">
+                <div class="card-heading">
+                  <span class="level-badge moderate">Moderate</span>
+                  <h3>Mall Steps Circuit</h3>
+                </div>
+                <p>Indoor walking session for people combining errands with healthy movement.</p>
+                <dl class="event-facts">
+                  <div>
+                    <dt>When</dt>
+                    <dd>Tue, 6:00 PM</dd>
+                  </div>
+                  <div>
+                    <dt>Where</dt>
+                    <dd>City Mall Atrium</dd>
+                  </div>
+                  <div>
+                    <dt>Route</dt>
+                    <dd>3 levels, 35 minutes</dd>
+                  </div>
+                  <div>
+                    <dt>Food</dt>
+                    <dd>Water station</dd>
+                  </div>
+                </dl>
+              </div>
+              <button type="button" class="select-button" data-event-select="mall-steps">
+                View details
+              </button>
+            </article>
+
+            <article
+              class="event-card"
+              data-event-card
+              data-event-id="park-loop"
+              data-level="active"
+              data-location="outdoor family"
+              data-food="provided"
+            >
+              <div class="card-main">
+                <div class="card-heading">
+                  <span class="level-badge active">Active</span>
+                  <h3>Park Loop Social Walk</h3>
+                </div>
+                <p>Community route with a steady pace, shaded pauses, and group check-ins.</p>
+                <dl class="event-facts">
+                  <div>
+                    <dt>When</dt>
+                    <dd>Fri, 5:15 PM</dd>
+                  </div>
+                  <div>
+                    <dt>Where</dt>
+                    <dd>Green Park Gate 2</dd>
+                  </div>
+                  <div>
+                    <dt>Route</dt>
+                    <dd>4.1 km mixed path</dd>
+                  </div>
+                  <div>
+                    <dt>Food</dt>
+                    <dd>Fruit stop</dd>
+                  </div>
+                </dl>
+              </div>
+              <button type="button" class="select-button" data-event-select="park-loop">
+                View details
+              </button>
+            </article>
+          </div>
+        </section>
+
+        <aside id="event-detail" class="detail-panel" aria-labelledby="detail-heading" data-event-detail>
+          <div class="detail-header">
+            <span class="level-badge easy" data-detail-level>Easy</span>
+            <h2 id="detail-heading" data-detail-title>Corniche Sunrise Walk</h2>
+            <p data-detail-summary>
+              Low-pressure morning route for new walkers and social fitness seekers.
+            </p>
+          </div>
+
+          <div class="map-preview" id="route-map" data-route-map role="img" aria-label="Route map preview for Corniche Sunrise Walk">
+            <span>Start</span>
+            <span>Waterfront</span>
+            <span>Finish</span>
+          </div>
+
+          <dl class="detail-grid">
+            <div>
+              <dt>Route</dt>
+              <dd data-detail-route>2.4 km flat loop beside the promenade</dd>
+            </div>
+            <div>
+              <dt>Difficulty</dt>
+              <dd data-detail-difficulty>Easy pace, no stairs, stroller friendly</dd>
+            </div>
+            <div>
+              <dt>Food</dt>
+              <dd data-detail-food>Cafes nearby; water recommended</dd>
+            </div>
+            <div>
+              <dt>Meet point</dt>
+              <dd data-detail-meet>South waterfront entrance</dd>
+            </div>
+          </dl>
+
+          <div class="detail-actions">
+            <a class="primary-action" href="#signup-panel" data-signup-link>Access sign-up</a>
+            <a class="secondary-action" href="#route-map" data-map-link>Open route map</a>
+          </div>
+        </aside>
+      </section>
+
+      <section id="signup-panel" class="signup-band" aria-labelledby="signup-heading">
+        <div class="signup-copy">
+          <p class="eyebrow">Sign-up access</p>
+          <h2 id="signup-heading">Reserve a demo spot</h2>
+          <p>
+            This form uses fictional demo data and keeps the sprint evidence clear:
+            event selection, attendance intent, and visible registration access.
+          </p>
+        </div>
+
+        <form class="signup-form" action="#signup-panel" method="get" data-signup-form>
+          <label for="selected-event">Selected event</label>
+          <select id="selected-event" name="event" data-signup-event>
+            <option value="corniche-sunrise">Corniche Sunrise Walk</option>
+            <option value="mall-steps">Mall Steps Circuit</option>
+            <option value="park-loop">Park Loop Social Walk</option>
+          </select>
+
+          <button type="submit" data-signup-submit>Confirm interest</button>
+          <p class="signup-status" role="status" aria-live="polite" data-signup-status>
+            No name, email, or other personal data is requested or stored.
+          </p>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
