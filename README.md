@@ -2,6 +2,8 @@
 
 Steps Together is a dependency-free Sprint 2 demo for the E-phase laboratory. It keeps the approved journey from the report: discover a community walking event, review the route and practical details, then confirm sign-up interest.
 
+Live demo: <https://ray-suton.github.io/steps-together-demo/>
+
 ## Run locally
 
 Requirements: Node.js 20 or newer.
@@ -43,6 +45,8 @@ The local server exposes static `GET` resources only:
 - `GET /src/domain.js` and `GET /src/events.js` -> data contract and demo records
 
 There is no registration API in this MVP. The sign-up action records nothing; it only confirms the selected event in the current page.
+
+There is no client-side storage, attendee list, active-event database, or admin view in this Wizard-of-Oz increment.
 
 ## Event schema
 

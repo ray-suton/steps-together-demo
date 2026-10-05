@@ -40,6 +40,7 @@
 - Visual QA: responsive screenshots passed the second visual verdict at 93/100.
 - Runtime hardening: a second `npm run serve` now falls back from occupied port 4173 to the next available port instead of throwing an unhandled `EADDRINUSE` error.
 - Route visual polish: the preview now uses curved waypoint geometry, contextual water/road cues, start/finish markers, waypoint labels, and a north indicator while remaining clearly labeled as illustrative.
+- Deployment: public GitHub repository and GitHub Pages site are live at `https://ray-suton.github.io/steps-together-demo/`; the Pages build is `built`, and HTML/CSS/JS each return HTTP 200.
 
 ### Current blockers and risks
 
@@ -49,6 +50,6 @@
 
 ### Next steps
 
-1. Run `npm run serve` and use the local Wizard-of-Oz build for the presentation.
-2. If a public submission URL is required, deploy the repository root to the team's selected static host.
-3. Add the final URL and presentation feedback to the E-phase report.
+1. Use the GitHub Pages URL for the Tuesday presentation.
+2. Add the live URL and presentation feedback to the E-phase report.
+3. Keep attendee storage/admin views deferred unless the course explicitly requires them.
