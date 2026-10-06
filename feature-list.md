@@ -20,6 +20,15 @@
 - Dependencies: event discovery selection.
 - Implementation: `src/app.js`, `index.html`, `styles.css`.
 
+### Personal registered-events page
+
+- Status: shipped
+- Priority: P1
+- User value: lets a presenter show that a selected event remains available after a page reload.
+- Acceptance: confirming interest adds one deduplicated event ID to browser-local storage; the personal page lists it and links back to details without requesting personal information.
+- Dependencies: event detail/sign-up flow and browser `localStorage`.
+- Implementation: `src/app.js`, `index.html`, `styles.css`, `tests/app-contract.test.mjs`.
+
 ## Planned release work
 
 ### Public static deployment

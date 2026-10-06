@@ -51,11 +51,54 @@ const SELECTORS = {
   signupEvent: "[data-signup-event]",
   signupForm: "[data-signup-form]",
   signupStatus: "[data-signup-status], #signup-status",
+  registeredCount: "[data-registered-count]",
+  registeredList: "[data-registered-list]",
+  registeredEmpty: "[data-registered-empty]",
+  registeredStatus: "[data-registered-status]",
   status: "[data-status-message]",
   category: "#category-filter, [data-level-filter]"
 };
 
 const EMAIL_ADDRESS = "hello@steps-together.local";
+const REGISTERED_EVENTS_KEY = "steps-together:registered-events";
+
+function getStorage(storage) {
+  if (storage && typeof storage.getItem === "function" && typeof storage.setItem === "function") {
+    return storage;
+  }
+  try {
+    return globalThis.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+export function readRegisteredEventIds(storage = getStorage()) {
+  if (!storage) return [];
+  try {
+    const parsed = JSON.parse(storage.getItem(REGISTERED_EVENTS_KEY) || "[]");
+    return Array.isArray(parsed) ? [...new Set(parsed.filter((id) => typeof id === "string"))] : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveRegisteredEventIds(ids, storage = getStorage()) {
+  const normalized = [...new Set((Array.isArray(ids) ? ids : []).filter((id) => typeof id === "string"))];
+  if (storage) {
+    try {
+      storage.setItem(REGISTERED_EVENTS_KEY, JSON.stringify(normalized));
+    } catch {
+      // Private browsing and blocked storage should not break the demo flow.
+    }
+  }
+  return normalized;
+}
+
+export function registerEvent(id, storage = getStorage()) {
+  if (typeof id !== "string" || !id) return readRegisteredEventIds(storage);
+  return saveRegisteredEventIds([...readRegisteredEventIds(storage), id], storage);
+}
 
 export function escapeHtml(value) {
   return String(value ?? "")
@@ -309,7 +352,7 @@ export function buildSignupIntent(event) {
   ].join("\n");
 
   return {
-    confirmation: `Interest noted for ${event.title}. The demo does not store personal data.`,
+    confirmation: `Registered for ${event.title} on this browser. The demo does not store personal data.`,
     mailtoHref: `mailto:${EMAIL_ADDRESS}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   };
 }
@@ -338,6 +381,20 @@ function eventCard(event) {
         <span class="spots-label">${escapeHtml(spots)} available</span>
         <button type="button" class="select-button" data-action="view-event" data-event-select="${escapeHtml(event.id)}" data-event-id="${escapeHtml(event.id)}">View details</button>
       </div>
+    </article>
+  `;
+}
+
+function registeredEventCard(event) {
+  const difficulty = difficultyInfo(event.difficulty);
+  return `
+    <article class="registered-card">
+      <div>
+        <span class="level-badge ${escapeHtml(event.difficulty)}">${escapeHtml(difficulty.label)}</span>
+        <h3>${escapeHtml(event.title)}</h3>
+        <p>${escapeHtml(formatSchedule(event))} · ${escapeHtml(event.location)}</p>
+      </div>
+      <a class="secondary-action" href="#event-detail" data-registered-event="${escapeHtml(event.id)}">View details</a>
     </article>
   `;
 }
@@ -375,16 +432,37 @@ function query(root, selector) {
   return root?.querySelector?.(selector) || null;
 }
 
-export function createApp({ document: doc = globalThis.document, events = DEFAULT_EVENTS } = {}) {
+export function createApp({ document: doc = globalThis.document, events = DEFAULT_EVENTS, storage = getStorage() } = {}) {
   const state = {
     events,
     selectedEventId: null,
+    registeredEventIds: readRegisteredEventIds(storage),
     filters: {
       category: "all",
       impact: "all",
       food: "all",
       location: "all",
       query: ""
+    }
+  };
+
+  const renderRegistered = () => {
+    const registeredEvents = state.registeredEventIds
+      .map((id) => state.events.find((event) => event.id === id))
+      .filter(Boolean);
+    const list = query(doc, SELECTORS.registeredList);
+    const count = query(doc, SELECTORS.registeredCount);
+    const empty = query(doc, SELECTORS.registeredEmpty);
+    if (count) {
+      count.textContent = `${registeredEvents.length} registered`;
+    }
+    if (list) {
+      list.innerHTML = registeredEvents.length
+        ? registeredEvents.map(registeredEventCard).join("")
+        : '<p class="empty-state" data-registered-empty>No events registered yet. Confirm interest above to add one here.</p>';
+    }
+    if (empty && !list) {
+      empty.hidden = registeredEvents.length > 0;
     }
   };
 
@@ -417,6 +495,7 @@ export function createApp({ document: doc = globalThis.document, events = DEFAUL
         .map((event) => `<option value="${escapeHtml(event.id)}">${escapeHtml(event.title)}</option>`)
         .join("");
     }
+    renderRegistered();
   };
 
   const openEvent = (eventId) => {
@@ -489,10 +568,20 @@ export function createApp({ document: doc = globalThis.document, events = DEFAUL
         }
       }
     });
+    query(doc, SELECTORS.registeredList)?.addEventListener("click", (event) => {
+      const link = event.target.closest?.("[data-registered-event]");
+      if (link) {
+        openEvent(link.dataset.registeredEvent);
+      }
+    });
     query(doc, SELECTORS.signupForm)?.addEventListener("submit", (event) => {
       event.preventDefault();
       const selectedId = query(doc, SELECTORS.signupEvent)?.value;
       const selected = state.events.find((candidate) => candidate.id === selectedId) || state.events[0];
+      if (selected) {
+        state.registeredEventIds = registerEvent(selected.id, storage);
+        renderRegistered();
+      }
       const status = query(doc, SELECTORS.status);
       if (selected && status) {
         status.textContent = buildSignupIntent(selected).confirmation;
@@ -503,6 +592,10 @@ export function createApp({ document: doc = globalThis.document, events = DEFAUL
       }
       if (selected) {
         openEvent(selected.id);
+        const registeredStatus = query(doc, SELECTORS.registeredStatus);
+        if (registeredStatus) {
+          registeredStatus.textContent = `${selected.title} was added to your browser-only registered events list.`;
+        }
       }
     });
   };
@@ -512,6 +605,7 @@ export function createApp({ document: doc = globalThis.document, events = DEFAUL
     closeEvent,
     openEvent,
     render,
+    renderRegistered,
     state
   };
 }

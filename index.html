@@ -26,6 +26,7 @@
         <a href="#events">Events</a>
         <a href="#event-detail">Details</a>
         <a href="#signup-panel">Sign up</a>
+        <a href="#personal-panel">My events</a>
       </nav>
     </header>
 
@@ -280,6 +281,23 @@
             No name, email, or other personal data is requested or stored.
           </p>
         </form>
+      </section>
+
+      <section id="personal-panel" class="personal-panel" aria-labelledby="personal-heading">
+        <div class="personal-header">
+          <div>
+            <p class="eyebrow">Personal page</p>
+            <h2 id="personal-heading">My registered events</h2>
+            <p class="personal-intro">
+              Your demo registrations are saved only in this browser. No account or attendee database is used.
+            </p>
+          </div>
+          <p class="count-pill" data-registered-count>0 registered</p>
+        </div>
+        <div class="registered-list" data-registered-list>
+          <p class="empty-state" data-registered-empty>No events registered yet. Confirm interest above to add one here.</p>
+        </div>
+        <p class="personal-status" role="status" aria-live="polite" data-registered-status></p>
       </section>
     </main>
   </body>

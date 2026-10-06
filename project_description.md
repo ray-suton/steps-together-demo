@@ -20,10 +20,10 @@ The product exists to prove one observable Scrum increment: a person can browse 
 
 - A static browser application is sufficient for the course demo.
 - The route preview is visibly labeled as an illustration; Google Maps is used only for the meeting-point link.
-- The sign-up flow stores and transmits no personal information.
+- The sign-up flow stores only event IDs in browser-local storage and transmits no personal information.
 - Runtime AI is excluded because it does not advance the Sprint 2 acceptance criteria.
 - Public deployment remains a separate release step because no hosting target or account was provided.
 
 ## Non-goals
 
-User accounts, persistent registration, organizer administration, payments, live maps, attendance tracking, health recommendations, and production security/compliance are not part of this demo.
+User accounts, shared/persistent registration, attendee rosters, organizer administration, payments, live maps, attendance tracking, health recommendations, and production security/compliance are not part of this demo.

@@ -5,7 +5,10 @@ import {
   buildRouteSvg,
   buildSignupIntent,
   getExternalMapUrl,
-  normalizeEvents
+  normalizeEvents,
+  readRegisteredEventIds,
+  registerEvent,
+  saveRegisteredEventIds
 } from "../src/app.js";
 
 const sampleEvents = [
@@ -109,4 +112,19 @@ test("sign-up intent is privacy-safe and deterministic", () => {
   assert.match(intent.confirmation, /does not store personal data/);
   assert.match(intent.mailtoHref, /^mailto:hello@steps-together\.local/);
   assert.match(decodeURIComponent(intent.mailtoHref), /No personal data was collected/);
+});
+
+test("registered events persist only as deduplicated local ids", () => {
+  const values = new Map();
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => values.set(key, value)
+  };
+
+  assert.deepEqual(readRegisteredEventIds(storage), []);
+  assert.deepEqual(registerEvent("reef-walk", storage), ["reef-walk"]);
+  assert.deepEqual(registerEvent("reef-walk", storage), ["reef-walk"]);
+  assert.deepEqual(registerEvent("park-count", storage), ["reef-walk", "park-count"]);
+  assert.deepEqual(readRegisteredEventIds(storage), ["reef-walk", "park-count"]);
+  assert.deepEqual(saveRegisteredEventIds(["reef-walk", 42, "reef-walk"], storage), ["reef-walk"]);
 });
